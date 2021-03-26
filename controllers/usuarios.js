@@ -66,7 +66,6 @@ const usuarioRegistro = async(req, res = response) => {
 const obtenerUsuarios = async(req, res = response) => {
 
 
-
     try {
 
         // const usuariosBD = await Usuario.find({});
@@ -77,7 +76,7 @@ const obtenerUsuarios = async(req, res = response) => {
         const [usuariosBD, usuariosTotal] = await Promise.all([
 
             Usuario.find({}),
-            Usuario.count()
+            Usuario.countDocuments()
 
         ]);
 

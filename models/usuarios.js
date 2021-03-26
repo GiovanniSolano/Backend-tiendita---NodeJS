@@ -41,7 +41,7 @@ const usuarioSchema = Schema({
 });
 
 
-// En todas las peticiones que se hagan a esta colección, no se mostrará el password ni el _v,
+// Modificar la salida, no se mostrará el password ni el _v,
 // el _id se renombra a uid
 
 usuarioSchema.method('toJSON', function() {

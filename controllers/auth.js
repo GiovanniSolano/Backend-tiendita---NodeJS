@@ -1,6 +1,7 @@
 const Usuario = require('../models/usuarios');
 const { response } = require('express');
 const bcrypt = require('bcrypt');
+const generarToken = require('../helpers/jwt');
 
 
 const loginUsuario = async(req, res = response) => {
@@ -22,7 +23,7 @@ const loginUsuario = async(req, res = response) => {
         }
 
         // Verificar contraseña 
-        const validPassword = await bcrypt.compareSync(password, usuarioBD.password);
+        const validPassword = bcrypt.compareSync(password, usuarioBD.password);
 
         // Cambiar mensaje al pasar a producción, sólo es para probar funcionamiento
         if (!validPassword) {
@@ -32,11 +33,14 @@ const loginUsuario = async(req, res = response) => {
             });
         }
 
+
         // Generar token
+        const token = await generarToken(usuarioBD.id);
 
         res.status(200).json({
             ok: true,
-            msg: 'Login exitoso'
+            msg: 'Login exitoso',
+            token,
         });
 
 
