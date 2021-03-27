@@ -3,24 +3,33 @@ const { response } = require('express');
 
 const verificaToken = (req, res = response, next) => {
 
-    const token = req.body.token;
+    const token = req.headers['x-token'];
 
-    jwt.verify(token, 'este-es-el-SEED', function(err, decoded) {
+    if (!token) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'No existe un token en la petición'
+        });
+    }
 
-        if (err) {
-            return res.status(401).json({
+    try {
 
-                ok: false,
-                msg: 'Token incorrecto'
-
-            });
-        }
-
-        req.uid = decoded.uid;
+        const { uid } = jwt.verify(token, 'este-es-el-SEED');
+        req.uid = uid;
 
         next();
 
-    });
+    } catch (error) {
+
+        return res.status(401).json({
+
+            ok: false,
+            msg: 'Token no válido'
+
+        });
+
+
+    }
 
 }
 
