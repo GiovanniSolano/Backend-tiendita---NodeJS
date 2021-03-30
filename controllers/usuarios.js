@@ -1,6 +1,7 @@
 const Usuario = require('../models/usuarios');
 const { response } = require('express');
 const bcrypt = require('bcrypt');
+const generarToken = require('../helpers/jwt');
 
 
 
@@ -49,15 +50,19 @@ const usuarioRegistro = async(req, res = response) => {
 
         await nuevoUsuario.save();
 
+        // Generar token
+        const token = await generarToken(nuevoUsuario.id);
+
         res.status(200).json({
             ok: true,
-            nuevoUsuario
+            msg: 'Registro exitoso',
+            token,
         });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             ok: false,
-            msg: 'Error al registrar usuario'
+            msg: 'Error al registrar usuario, ver logs'
         });
     }
 }
