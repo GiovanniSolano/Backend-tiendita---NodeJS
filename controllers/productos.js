@@ -38,7 +38,7 @@ const obtenerProductoID = async(req, res = response) => {
         if (!productoBD) {
             return res.status(500).json({
                 ok: false,
-                msg: 'No existe un usuario con ese id'
+                msg: 'No existe un producto con ese id'
             });
         }
 
@@ -63,9 +63,6 @@ const obtenerProductoID = async(req, res = response) => {
 const agregarProducto = async(req, res = response) => {
 
     const body = req.body;
-
-    console.log(body);
-
 
     try {
 
