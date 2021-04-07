@@ -1,5 +1,9 @@
 const Producto = require('../models/productos');
 const { response } = require('express');
+const cloudinary = require('cloudinary').v2;
+
+
+
 
 
 const obtenerProductos = async(req, res = response) => {
@@ -62,13 +66,39 @@ const obtenerProductoID = async(req, res = response) => {
 
 const agregarProducto = async(req, res = response) => {
 
+
     const body = req.body;
 
     try {
 
-        const nuevoProducto = new Producto(body);
-        await nuevoProducto.save()
 
+        // Existe un archivo
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No hay ningún archivo seleccionado'
+            });
+        }
+
+        const file = req.files.imagen;
+
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: "productos"
+        });
+
+        // console.log(result);
+        const nuevoProducto = new Producto({
+            nombre: body.nombre,
+            marca: body.marca,
+            descripcion: body.descripcion,
+            precio: body.precio,
+            proveedor: body.proveedor,
+            cantidad: body.cantidad,
+            img_id: result.public_id,
+            url_img: result.url
+        });
+
+        await nuevoProducto.save()
 
         res.status(201).json({
             ok: true,
@@ -101,13 +131,40 @@ const editarProducto = async(req, res = response) => {
             });
         }
 
-        const productoActualizado = await Producto.findByIdAndUpdate(id, req.body, { new: true });
 
+
+        if (req.files) {
+
+
+            if (!req.files || Object.keys(req.files).length === 0) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'No hay ningún archivo seleccionado'
+                });
+            }
+
+            await cloudinary.uploader.destroy(productoBD.img_id);
+
+
+            const file = req.files.imagen;
+            const result = await cloudinary.uploader.upload(file.tempFilePath, {
+                folder: "productos"
+            });
+
+
+            req.body.img_id = result.public_id;
+            req.body.url_img = result.url;
+
+
+
+        }
+
+        const productoActualizado = await Producto.findByIdAndUpdate(id, req.body, { new: true });
         res.status(200).json({
             ok: true,
             msg: 'Producto actualizado correctamente',
             productoActualizado
-        })
+        });
 
     } catch (error) {
         console.log(error);
@@ -137,6 +194,8 @@ const eliminarProducto = async(req, res = response) => {
         }
 
         const productoEliminado = await Producto.findByIdAndDelete(id);
+        await cloudinary.uploader.destroy(productoBD.img_id);
+
 
         res.status(200).json({
             ok: true,

@@ -28,7 +28,11 @@ const productoSchema = Schema({
         required: true
     },
 
-    img: {
+    img_id: {
+        type: String
+    },
+
+    url_img: {
         type: String
     },
 

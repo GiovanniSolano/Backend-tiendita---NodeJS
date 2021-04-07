@@ -2,6 +2,14 @@ const express = require('express');
 const connectionDB = require('./database/config');
 const app = express();
 const cors = require('cors');
+const fileupload = require('express-fileupload');
+
+
+// Fileupload
+app.use(fileupload({
+    useTempFiles: true
+}));
+
 
 
 // CORS
@@ -17,6 +25,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
 app.use('/api/productos', require('./routes/productos'));
+app.use('/api/busqueda', require('./routes/busquedas'));
 app.use('/api/proveedores', require('./routes/proveedores'));
 
 
