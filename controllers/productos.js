@@ -3,6 +3,11 @@ const { response } = require('express');
 const cloudinary = require('cloudinary').v2;
 
 
+cloudinary.config({
+    cloud_name: 'dpg6wpd2r',
+    api_key: '236433162332533',
+    api_secret: 'kk_dwWGGQJUocQ_vBM34wYyaK3U'
+});
 
 
 

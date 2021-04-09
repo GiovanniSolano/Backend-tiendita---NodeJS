@@ -12,11 +12,10 @@ const proveedorSchema = Schema({
         required: true
     },
 
-    direccion: {
-        required: true,
-        type: Schema.Types.ObjectId,
-        ref: 'Direccion'
-    },
+    // direccion: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Direccion'
+    // },
 
 
 }, { collection: 'proveedores' });
